@@ -1,3 +1,35 @@
+# Bazilo
+
+## Project Overview
+
+Bazilo is a web application designed to allow users to join game rooms and interact with other participants through real-time chat. Built with Next.js and React, this project focuses on delivering a seamless and engaging multiplayer experience.
+
+## Features
+
+- Create or join game rooms (lobbies)
+- Real-time chat functionality for all room participants
+- Responsive and modern user interface
+- Planned future implementation of JWT-based authentication and session management for secure access
+
+## Objectives
+
+The main goal of Bazilo is to provide a simple yet effective platform for multiplayer interaction, combining gaming and social elements. This project serves both as a learning experience and a demonstration of full-stack web development using modern tools and frameworks.
+
+## Technologies Used
+
+- Next.js (React framework)
+- Tailwind CSS for styling
+- Socket.io (planned for real-time communication)
+- JWT and cookies (planned for authentication and security)
+
+## Getting Started
+
+Instructions for installation, running, and contributing will be added soon.
+
+---
+
+# Sección automática
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
