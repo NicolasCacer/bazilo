@@ -1,8 +1,4 @@
-import ToggleMode from "@/components/toggleMode";
+"use client";
 export default function Home() {
-  return (
-    <div className="h-screen flex justify-center items-center">
-      <ToggleMode />
-    </div>
-  );
+  return <div className="flex-grow flex justify-center items-center">main</div>;
 }
