@@ -1,3 +1,4 @@
+"use client";
 export default function Home() {
-  return <div className="h-screen flex justify-center items-center">Hola</div>;
+  return <div className="flex-grow flex justify-center items-center">main</div>;
 }
