@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import NavBar from "@/components/landingPage/navBar";
 import { Rajdhani } from "next/font/google";
 
 const rajdhani = Rajdhani({ subsets: ["latin"], weight: "600" });
@@ -22,7 +21,6 @@ export default function RootLayout({
         className={`${rajdhani.className} antialiased bg-white dark:bg-black text-black dark:text-white h-screen flex flex-col`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <NavBar />
           {children}
         </ThemeProvider>
       </body>
