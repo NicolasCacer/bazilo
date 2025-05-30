@@ -31,7 +31,7 @@ export default function Home() {
     };
 
     setRooms([...rooms, newRoom]);
-    setNewRoomName(""); // Limpiar input después de crear
+    setNewRoomName("");
   };
 
   const joinRoom = (id: string) => {
@@ -39,46 +39,65 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 p-8">
-      <h1 className="text-3xl font-bold">Available rooms</h1>
-      <div className="w-full max-w-md pb-6 border-b mb-4">
-        <h2 className="text-xl font-semibold mb-2">Create room</h2>
-        <div className="flex gap-2">
+    <div className="min-h-screen bg-teal-50 flex flex-col items-center p-8">
+      <h1 className="text-4xl font-extrabold text-teal-800 mb-8">
+        Available Rooms
+      </h1>
+
+      <section className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg border border-teal-200 mb-10">
+        <h2 className="text-2xl font-semibold text-teal-700 mb-4">
+          Create a Room
+        </h2>
+        <div className="flex gap-3">
           <input
             type="text"
             placeholder="Room name"
-            className="flex-grow border px-3 py-2 rounded"
+            className="flex-grow border border-teal-300 rounded-md px-4 py-2 text-teal-900 placeholder-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
             value={newRoomName}
             onChange={(e) => setNewRoomName(e.target.value)}
           />
           <button
             onClick={createRoom}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+            className="bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-md px-5 transition-shadow shadow-md hover:shadow-lg"
+            aria-label="Create new room"
           >
             Create
           </button>
         </div>
-      </div>
-      <div className="w-full max-w-md space-y-3">
+      </section>
+
+      <section className="w-full max-w-md space-y-4">
         {rooms.length === 0 ? (
-          <p className="text-center text-gray-500">No rooms available</p>
+          <p className="text-center text-teal-400 italic">No rooms available</p>
         ) : (
           rooms.map((room) => (
             <div
               key={room.id}
-              className="flex justify-between items-center bg-gray-100 p-3 rounded shadow"
+              className="flex justify-between items-center bg-white border border-teal-200 rounded-md p-4 shadow-sm hover:shadow-md transition cursor-pointer"
+              onClick={() => joinRoom(room.id)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") joinRoom(room.id);
+              }}
             >
-              <span>{room.name}</span>
+              <span className="text-teal-800 font-medium text-lg">
+                {room.name}
+              </span>
               <button
-                onClick={() => joinRoom(room.id)}
-                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  joinRoom(room.id);
+                }}
+                className="bg-teal-600 hover:bg-teal-700 text-white rounded-md px-4 py-2 font-semibold transition"
+                aria-label={`Join ${room.name}`}
               >
                 Join
               </button>
             </div>
           ))
         )}
-      </div>
+      </section>
     </div>
   );
 }

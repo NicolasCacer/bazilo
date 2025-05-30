@@ -15,32 +15,36 @@ export default function RoomPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black text-white p-8">
-      <div className="max-w-4xl mx-auto bg-black/40 border border-blue-500 rounded-2xl p-6 shadow-lg">
-        <h1 className="text-4xl font-bold mb-6 text-center">Room #{roomId}</h1>
+    <div className="min-h-screen bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950 text-white p-8">
+      <div className="max-w-4xl mx-auto bg-teal-900/80 border border-teal-500 rounded-2xl p-8 shadow-lg">
+        <h1 className="text-4xl font-extrabold mb-8 text-center text-teal-300">
+          Room #{roomId}
+        </h1>
 
         {/* General info */}
-        <div className="flex justify-between items-center mb-6">
-          <p className="text-lg">Players in room: {players.length}</p>
-          <div className="space-x-2">
+        <div className="flex justify-between items-center mb-8">
+          <p className="text-lg text-teal-200 font-semibold">
+            Players in room: {players.length}
+          </p>
+          <div className="space-x-4">
             <button
               onClick={handleAddPlayer}
-              className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md transition"
+              className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-md font-semibold shadow-md transition"
             >
               Add Player
             </button>
-            <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition">
+            <button className="bg-teal-500 hover:bg-teal-600 text-white px-5 py-2 rounded-md font-semibold shadow-md transition">
               Start Game
             </button>
           </div>
         </div>
 
         {/* Player list */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
           {players.map((player, index) => (
             <div
               key={index}
-              className="bg-blue-800/40 p-4 rounded-lg border border-blue-500 text-center"
+              className="bg-teal-800/70 p-5 rounded-xl border border-teal-400 text-center font-medium text-teal-100 shadow-inner transition hover:bg-teal-700/90 cursor-default select-none"
             >
               {player}
             </div>
@@ -48,20 +52,20 @@ export default function RoomPage() {
         </div>
 
         {/* Chat section */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-2">💬 Chat</h2>
-          <div className="bg-black/30 border border-gray-600 p-4 h-48 overflow-y-auto rounded-md mb-2">
+        <div>
+          <h2 className="text-2xl font-semibold mb-3 text-teal-300">💬 Chat</h2>
+          <div className="bg-teal-900/60 border border-teal-600 p-5 h-48 overflow-y-auto rounded-lg mb-4 text-teal-200 text-sm font-mono">
             {/* Chat messages go here */}
-            <p className="text-sm text-gray-300">[Player1]: Hello!</p>
-            <p className="text-sm text-gray-300">[Player2]: Ready?</p>
+            <p>[Player1]: Hello!</p>
+            <p>[Player2]: Ready?</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <input
               type="text"
               placeholder="Type a message..."
-              className="flex-1 p-2 rounded-md bg-gray-800 border border-gray-600 text-white"
+              className="flex-1 p-3 rounded-lg bg-teal-800 border border-teal-600 text-teal-100 placeholder-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition">
+            <button className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-md">
               Send
             </button>
           </div>
