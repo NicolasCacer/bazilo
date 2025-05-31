@@ -63,21 +63,22 @@ export default function Register() {
         title: "Registration successful!",
         showConfirmButton: false,
         timer: 1000,
+        timerProgressBar: true,
       });
       router.push("/home");
     }
   };
 
   return (
-    <div className="flex-grow flex flex-col justify-center items-center bg-teal-50">
+    <div className="flex flex-col min-h-screen justify-center items-center bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950 pt-[90px]">
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 w-80 px-6 py-8 rounded-md shadow-md border-2 border-teal-600 bg-white"
+        className="w-80 px-6 py-8 rounded-md shadow-md border-2 border-teal-900 bg-white"
       >
         <input
           type="text"
           placeholder="Username"
-          className="w-full p-2 border border-teal-400 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full p-2 border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
           value={formData.username}
           onChange={(e) =>
             setFormData({ ...formData, username: e.target.value })
@@ -91,7 +92,7 @@ export default function Register() {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className="border border-teal-400 rounded-l-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="border border-teal-900 rounded-l-md p-2 mt-4 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
             value={formData.password}
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
@@ -100,7 +101,7 @@ export default function Register() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="py-2 rounded-r-md text-sm text-teal-500 hover:text-teal-700 px-2 bg-white border border-l-0 border-teal-400"
+            className="py-2 rounded-r-md text-sm text-teal-800 hover:text-teal-500 px-2 mt-4 border border-l-0 border-teal-900 bg-gray-200"
             aria-label="Toggle password visibility"
           >
             {showPassword ? (
@@ -117,30 +118,32 @@ export default function Register() {
         <input
           type="email"
           placeholder="Email"
-          className="w-full p-2 border border-teal-400 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full p-2 mt-4 border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
         {errors.email && (
           <p className="text-teal-700 text-sm">{errors.email}</p>
         )}
-
-        <input
-          type="date"
-          placeholder="Birth Date"
-          className="w-full p-2 border border-teal-400 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
-          value={formData.birthDate}
-          onChange={(e) =>
-            setFormData({ ...formData, birthDate: e.target.value })
-          }
-        />
-        {errors.birthDate && (
-          <p className="text-teal-700 text-sm">{errors.birthDate}</p>
-        )}
+        <div className="mt-4">
+          <label className="text-teal-950">Birth Date</label>
+          <input
+            type="date"
+            placeholder="Birth Date"
+            className="w-full p-2 border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+            value={formData.birthDate}
+            onChange={(e) =>
+              setFormData({ ...formData, birthDate: e.target.value })
+            }
+          />
+          {errors.birthDate && (
+            <p className="text-teal-700 text-sm">{errors.birthDate}</p>
+          )}
+        </div>
 
         <button
           type="submit"
-          className="w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition uppercase shadow-md"
+          className="w-full mt-4 bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition uppercase shadow-md"
         >
           Register
         </button>

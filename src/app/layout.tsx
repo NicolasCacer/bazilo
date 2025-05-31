@@ -17,9 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${rajdhani.className} antialiased bg-white dark:bg-black text-black dark:text-white h-screen flex flex-col`}
-      >
+      <body className={`${rajdhani.className} antialiased h-screen`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>

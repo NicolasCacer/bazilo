@@ -5,7 +5,7 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950 text-white">
+    <main className="flex-grow min-h-screen flex flex-col pt-[90px] bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950 text-white">
       <section className="flex-grow flex flex-col justify-center items-center px-6 text-center max-w-4xl mx-auto">
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-wide mb-4 drop-shadow-lg">
           Welcome to <span className="text-teal-400">Bazilo</span>
