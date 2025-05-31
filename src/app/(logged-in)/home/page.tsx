@@ -88,7 +88,7 @@ export default function Home() {
           <input
             type="text"
             placeholder="Room name"
-            className="flex-grow border-2 border-teal-900 rounded-md px-4 py-2 text-teal-900 focus:outline-none focus:ring-2 focus:ring-teal-900"
+            className="flex-grow border-2 bg-white border-teal-900 rounded-md px-4 py-2 text-teal-900 focus:outline-none focus:ring-2 focus:ring-teal-900"
             value={newRoomName}
             onChange={(e) => setNewRoomName(e.target.value)}
           />

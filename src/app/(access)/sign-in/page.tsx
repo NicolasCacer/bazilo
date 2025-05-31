@@ -78,7 +78,7 @@ export default function Register() {
         <input
           type="text"
           placeholder="Username"
-          className="w-full p-2 border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+          className="w-full p-2 bg-white border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
           value={formData.username}
           onChange={(e) =>
             setFormData({ ...formData, username: e.target.value })
@@ -92,7 +92,7 @@ export default function Register() {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className="border border-teal-900 rounded-l-md p-2 mt-4 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+            className="border bg-white border-teal-900 rounded-l-md p-2 mt-4 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
             value={formData.password}
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
@@ -118,7 +118,7 @@ export default function Register() {
         <input
           type="email"
           placeholder="Email"
-          className="w-full p-2 mt-4 border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+          className="w-full p-2 bg-white mt-4 border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
@@ -130,7 +130,7 @@ export default function Register() {
           <input
             type="date"
             placeholder="Birth Date"
-            className="w-full p-2 border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+            className="w-full p-2 bg-white border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
             value={formData.birthDate}
             onChange={(e) =>
               setFormData({ ...formData, birthDate: e.target.value })

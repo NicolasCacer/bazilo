@@ -59,7 +59,7 @@ export default function Login() {
         <input
           type="email"
           placeholder="Email"
-          className="w-full p-2 border border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-950 text-black"
+          className="w-full p-2 border bg-white border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-950 text-black"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
@@ -71,7 +71,7 @@ export default function Login() {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className="border border-teal-900 rounded-l-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-950 text-black"
+            className="border bg-white border-teal-900 rounded-l-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-950 text-black"
             value={formData.password}
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
