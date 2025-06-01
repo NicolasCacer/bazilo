@@ -55,9 +55,33 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validate()) {
+    if (!validate()) return;
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/register`,
+        {
+          method: "POST",
+          credentials: "include", // 👈 Importante para que se guarde la cookie HTTP-only
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!res.ok) {
+        const data = await res.json();
+        Swal.fire({
+          icon: "error",
+          title: "Registration failed",
+          text: data?.message || "Something went wrong.",
+        });
+        return;
+      }
+
       Swal.fire({
         icon: "success",
         title: "Registration successful!",
@@ -65,7 +89,15 @@ export default function Register() {
         timer: 1000,
         timerProgressBar: true,
       });
-      router.push("/home");
+
+      router.push("/home"); // O la ruta protegida a la que quieras redirigir
+    } catch (error) {
+      console.error("Registration error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Network error",
+        text: "Could not connect to the server.",
+      });
     }
   };
 

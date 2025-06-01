@@ -37,16 +37,53 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validate()) {
+    if (!validate()) return;
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // VERY IMPORTANT to send cookies
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        Swal.fire({
+          icon: "error",
+          title: "Login failed",
+          text: errorData.message || "Invalid credentials",
+        });
+        return;
+      }
+
+      // Assuming login success: backend set HttpOnly cookie automatically
+
       Swal.fire({
         icon: "success",
         showConfirmButton: false,
         timer: 800,
         timerProgressBar: true,
       });
+
       router.push("/home");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Network error",
+        text: "Please try again later.",
+      });
+      console.error(error);
     }
   };
 
