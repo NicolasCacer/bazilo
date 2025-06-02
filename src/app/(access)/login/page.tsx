@@ -5,19 +5,19 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
 type FormData = {
-  email: string;
+  username: string;
   password: string;
 };
 
 type Errors = {
-  email?: string;
+  username?: string;
   password?: string;
 };
 
 export default function Login() {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
-    email: "",
+    username: "",
     password: "",
   });
   const [errors, setErrors] = useState<Errors>({});
@@ -25,10 +25,8 @@ export default function Login() {
 
   const validate = (): boolean => {
     const newErrors: Errors = {};
-    if (!formData.email) {
-      newErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is not valid.";
+    if (!formData.username) {
+      newErrors.username = "username is required.";
     }
     if (!formData.password) {
       newErrors.password = "Password is required.";
@@ -51,7 +49,7 @@ export default function Login() {
           },
           credentials: "include", // VERY IMPORTANT to send cookies
           body: JSON.stringify({
-            email: formData.email,
+            displayName: formData.username,
             password: formData.password,
           }),
         }
@@ -94,14 +92,16 @@ export default function Login() {
         className="space-y-4 w-80 px-6 py-8 rounded-md shadow-md border-2 border-teal-900 bg-white"
       >
         <input
-          type="email"
-          placeholder="Email"
+          type="text"
+          placeholder="username"
           className="w-full p-2 border bg-white border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-950 text-black"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          value={formData.username}
+          onChange={(e) =>
+            setFormData({ ...formData, username: e.target.value })
+          }
         />
-        {errors.email && (
-          <p className="text-teal-700 text-sm">{errors.email}</p>
+        {errors.username && (
+          <p className="text-teal-700 text-sm">{errors.username}</p>
         )}
 
         <div className="flex justify-center items-center">

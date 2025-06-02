@@ -66,6 +66,15 @@ export default function Home() {
     });
 
     if (result.isConfirmed) {
+      try {
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || ""}/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
+      } catch (error) {
+        console.error("Error during logout:", error);
+      }
+
       await Swal.fire({
         title: "You are signed out",
         icon: "success",
