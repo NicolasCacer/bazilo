@@ -64,7 +64,7 @@ export default function Register() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/register`,
         {
           method: "POST",
-          credentials: "include", // 👈 Importante para que se guarde la cookie HTTP-only
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -82,15 +82,40 @@ export default function Register() {
         return;
       }
 
+      const loginRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            displayName: formData.username,
+            password: formData.password,
+          }),
+        }
+      );
+
+      if (!loginRes.ok) {
+        Swal.fire({
+          icon: "warning",
+          title: "Registered but login failed",
+          text: "Please login manually.",
+        });
+        router.push("/login");
+        return;
+      }
+
       Swal.fire({
         icon: "success",
-        title: "Registration successful!",
+        title: "Registration and login successful!",
         showConfirmButton: false,
         timer: 1000,
         timerProgressBar: true,
       });
 
-      router.push("/home"); // O la ruta protegida a la que quieras redirigir
+      router.push("/home");
     } catch (error) {
       console.error("Registration error:", error);
       Swal.fire({
