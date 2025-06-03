@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface User {
   displayName: string;
@@ -16,6 +22,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
+  // Cargar usuario desde localStorage al iniciar
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  // Guardar usuario en localStorage cuando cambia
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
+
   function login(userData: User) {
     setUser(userData);
   }
@@ -31,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Custom hook para consumir el contexto fácilmente
+// Hook personalizado para acceder al contexto
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
