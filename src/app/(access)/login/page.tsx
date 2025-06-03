@@ -4,6 +4,8 @@ import { FaRegEyeSlash, FaRegEye } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
+import axiosClient from "@/lib/axios";
+import { AxiosError } from "axios";
 
 type FormData = {
   username: string;
@@ -42,32 +44,10 @@ export default function Login() {
     if (!validate()) return;
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // VERY IMPORTANT to send cookies
-          body: JSON.stringify({
-            displayName: formData.username,
-            password: formData.password,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        Swal.fire({
-          icon: "error",
-          title: "Login failed",
-          text: errorData.message || "Invalid credentials",
-        });
-        return;
-      }
-
-      // Assuming login success: backend set HttpOnly cookie automatically
+      await axiosClient.post("/login", {
+        displayName: formData.username,
+        password: formData.password,
+      });
 
       Swal.fire({
         icon: "success",
@@ -79,12 +59,15 @@ export default function Login() {
         router.push("/home");
       });
     } catch (error) {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const errorMessage =
+        axiosError.response?.data?.message || "Invalid credentials";
+
       Swal.fire({
         icon: "error",
-        title: "Network error",
-        text: "Please try again later.",
+        title: "Login failed",
+        text: errorMessage,
       });
-      console.error(error);
     }
   };
 

@@ -64,7 +64,7 @@ export default function Home() {
       }
 
       await Swal.fire({
-        title: "You are signed out",
+        title: "We’re logging you out",
         icon: "success",
         timer: 800,
         showConfirmButton: false,

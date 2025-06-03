@@ -3,6 +3,9 @@ import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa6";
 import Swal from "sweetalert2";
+import axiosClient from "@/lib/axios";
+import { AxiosError } from "axios";
+import { useAuth } from "@/context/AuthContext";
 
 type FormData = {
   email: string;
@@ -26,6 +29,8 @@ export default function Register() {
     username: "",
     birthDate: "",
   });
+
+  const { login } = useAuth();
 
   const [errors, setErrors] = useState<Errors>({});
   const [showPassword, setShowPassword] = useState(false);
@@ -60,68 +65,45 @@ export default function Register() {
     if (!validate()) return;
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/register`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      // Register request
+      await axiosClient.post("/register", formData);
 
-      if (!res.ok) {
-        const data = await res.json();
-        Swal.fire({
-          icon: "error",
-          title: "Registration failed",
-          text: data?.message || "Something went wrong.",
+      try {
+        // Auto-login after registration
+        await axiosClient.post("/login", {
+          displayName: formData.username,
+          password: formData.password,
         });
-        return;
-      }
 
-      const loginRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            displayName: formData.username,
-            password: formData.password,
-          }),
-        }
-      );
+        login({ displayName: formData.username });
 
-      if (!loginRes.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Registration and login successful!",
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: true,
+        });
+
+        router.push("/home");
+      } catch (error) {
         Swal.fire({
           icon: "warning",
           title: "Registered but login failed",
           text: "Please login manually.",
         });
+        console.error(error);
         router.push("/login");
-        return;
       }
-
-      Swal.fire({
-        icon: "success",
-        title: "Registration and login successful!",
-        showConfirmButton: false,
-        timer: 1000,
-        timerProgressBar: true,
-      });
-
-      router.push("/home");
     } catch (error) {
-      console.error("Registration error:", error);
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const errorMessage =
+        axiosError.response?.data?.message || "Something went wrong.";
+
       Swal.fire({
         icon: "error",
-        title: "Network error",
-        text: "Could not connect to the server.",
+        title: "Registration failed",
+        text: errorMessage,
       });
     }
   };

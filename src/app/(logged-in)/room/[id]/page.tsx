@@ -24,26 +24,19 @@ export default function RoomPage() {
   const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Connect to Socket.IO backend process.env.NEXT_PUBLIC_BACKEND_URL!
     socket = io(process.env.NEXT_PUBLIC_BACKEND_URL!, {
       withCredentials: true,
     });
 
-    // Join the room
     socket.emit("joinRoom", roomId);
-
-    // Listen for incoming messages
     socket.on("message", (msg: ChatMessage) => {
       setMessages((prev) => [...prev, msg]);
     });
-
-    // Cleanup on component unmount
     return () => {
       socket.disconnect();
     };
   }, [roomId]);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
