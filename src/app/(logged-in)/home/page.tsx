@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import axiosClient from "@/lib/axios";
 
 type Room = {
   id: string;
@@ -17,17 +18,6 @@ export default function Home() {
     { id: "3", name: "Room 3" },
     { id: "4", name: "Room 4" },
     { id: "5", name: "Room 5" },
-    { id: "6", name: "Room 6" },
-    { id: "7", name: "Room 7" },
-    { id: "8", name: "Room 8" },
-    { id: "9", name: "Room 9" },
-    { id: "10", name: "Room 10" },
-    { id: "11", name: "Room 11" },
-    { id: "12", name: "Room 12" },
-    { id: "13", name: "Room 13" },
-    { id: "14", name: "Room 14" },
-    { id: "15", name: "Room 15" },
-    { id: "16", name: "Room 16" },
   ]);
 
   const [newRoomName, setNewRoomName] = useState("");
@@ -67,10 +57,8 @@ export default function Home() {
 
     if (result.isConfirmed) {
       try {
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || ""}/logout`, {
-          method: "POST",
-          credentials: "include",
-        });
+        const users = await axiosClient.post("/logout");
+        console.log(users.data);
       } catch (error) {
         console.error("Error during logout:", error);
       }

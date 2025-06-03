@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
+import { useAuth } from "@/context/AuthContext";
 
 // Define a type for messages
 interface ChatMessage {
@@ -16,8 +17,9 @@ export default function RoomPage() {
   const params = useParams();
   const router = useRouter();
   const roomId = params.id as string;
+  const { user } = useAuth();
 
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const chatRef = useRef<HTMLDivElement>(null);
 
@@ -31,8 +33,8 @@ export default function RoomPage() {
     socket.emit("joinRoom", roomId);
 
     // Listen for incoming messages
-    socket.on("message", ({ sender, message }: ChatMessage) => {
-      setMessages((prev) => [...prev, `[${sender.slice(0, 5)}]: ${message}`]);
+    socket.on("message", (msg: ChatMessage) => {
+      setMessages((prev) => [...prev, msg]);
     });
 
     // Cleanup on component unmount
@@ -54,7 +56,11 @@ export default function RoomPage() {
 
   const sendMessage = () => {
     if (input.trim()) {
-      socket.emit("sendMessage", { roomId, message: input });
+      socket.emit("sendMessage", {
+        sender: user?.displayName,
+        roomId,
+        message: input,
+      });
       setInput("");
     }
   };
@@ -73,7 +79,7 @@ export default function RoomPage() {
             className="bg-teal-950 border border-teal-300 p-5 h-48 overflow-y-auto rounded-lg mb-4 text-teal-200 text-sm font-mono"
           >
             {messages.map((msg, idx) => (
-              <p key={idx}>{msg}</p>
+              <p key={idx}>{`[${msg.sender}]: ${msg.message}`}</p>
             ))}
           </div>
           <div className="flex">

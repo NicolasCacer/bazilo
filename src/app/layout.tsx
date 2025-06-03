@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Rajdhani } from "next/font/google";
+import { AuthProvider } from "@/context/AuthContext";
 
 const rajdhani = Rajdhani({ subsets: ["latin"], weight: "600" });
 
@@ -19,7 +20,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${rajdhani.className} antialiased h-screen`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </body>
     </html>

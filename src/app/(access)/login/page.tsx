@@ -3,6 +3,7 @@ import { useState, FormEvent } from "react";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { useAuth } from "@/context/AuthContext";
 
 type FormData = {
   username: string;
@@ -22,6 +23,7 @@ export default function Login() {
   });
   const [errors, setErrors] = useState<Errors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { login } = useAuth();
 
   const validate = (): boolean => {
     const newErrors: Errors = {};
@@ -72,9 +74,10 @@ export default function Login() {
         showConfirmButton: false,
         timer: 800,
         timerProgressBar: true,
+      }).then(() => {
+        login({ displayName: formData.username });
+        router.push("/home");
       });
-
-      router.push("/home");
     } catch (error) {
       Swal.fire({
         icon: "error",
