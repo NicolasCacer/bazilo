@@ -2,21 +2,19 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import io, { Socket } from "socket.io-client";
+
+import { getSocket } from "@/lib/socket";
 import { useAuth } from "@/context/AuthContext";
 
-// Define a type for messages
 interface ChatMessage {
   sender: string;
   message: string;
 }
 
-let socket: Socket;
-
 export default function RoomPage() {
   const params = useParams();
   const router = useRouter();
-  const roomId = params.id as string;
+  const roomId = decodeURIComponent(params.id as string);
   const { user } = useAuth();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -24,16 +22,18 @@ export default function RoomPage() {
   const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    socket = io(process.env.NEXT_PUBLIC_BACKEND_URL!, {
-      withCredentials: true,
-    });
+    const socket = getSocket();
 
-    socket.emit("joinRoom", roomId);
-    socket.on("message", (msg: ChatMessage) => {
-      setMessages((prev) => [...prev, msg]);
-    });
+    if (roomId) {
+      socket.emit("joinRoom", roomId);
+
+      socket.on("message", (msg: ChatMessage) => {
+        setMessages((prev) => [...prev, msg]);
+      });
+    }
+
     return () => {
-      socket.disconnect();
+      socket.off("message");
     };
   }, [roomId]);
 
@@ -49,8 +49,9 @@ export default function RoomPage() {
 
   const sendMessage = () => {
     if (input.trim()) {
+      const socket = getSocket();
       socket.emit("sendMessage", {
-        sender: user?.displayName,
+        sender: user?.displayName || "Anonymous",
         roomId,
         message: input,
       });

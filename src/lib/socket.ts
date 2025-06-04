@@ -1,8 +1,15 @@
-// lib/socket.ts
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
-const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL!, {
-  withCredentials: true,
-});
+let socket: Socket | null = null;
 
-export default socket;
+export function getSocket() {
+  if (!socket) {
+    socket = io(
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001",
+      {
+        withCredentials: true,
+      }
+    );
+  }
+  return socket;
+}

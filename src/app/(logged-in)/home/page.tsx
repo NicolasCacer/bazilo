@@ -1,46 +1,73 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import { getSocket } from "@/lib/socket";
 import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
 import axiosClient from "@/lib/axios";
+import Swal from "sweetalert2";
 
 type Room = {
   id: string;
   name: string;
 };
 
-export default function Home() {
+export default function HomePage() {
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [roomInput, setRoomInput] = useState("");
   const router = useRouter();
 
-  const [rooms, setRooms] = useState<Room[]>([
-    { id: "1", name: "Room 1" },
-    { id: "2", name: "Room 2" },
-    { id: "3", name: "Room 3" },
-    { id: "4", name: "Room 4" },
-    { id: "5", name: "Room 5" },
-  ]);
+  useEffect(() => {
+    const socket = getSocket();
 
-  const [newRoomName, setNewRoomName] = useState("");
+    // Fallback: load rooms from API on first render
+    axiosClient.get("/rooms").then((res) => {
+      const data = res.data;
+      if (Array.isArray(data)) {
+        setRooms(data);
+      } else if (Array.isArray(data.rooms)) {
+        setRooms(data.rooms);
+      } else {
+        console.warn("Unexpected rooms format:", data);
+        setRooms([]);
+      }
+    });
 
-  const createRoom = () => {
-    if (!newRoomName.trim()) return;
+    // Socket listeners
+    socket.on("initialRooms", (rooms: Room[]) => {
+      setRooms(rooms);
+    });
 
-    const nextId =
-      rooms.length > 0
-        ? Math.max(...rooms.map((room) => Number(room.id))) + 1
-        : 1;
+    socket.on("newRoom", (room: Room) => {
+      setRooms((prev) => {
+        // Avoid duplicates by checking if room already exists
+        if (prev.find((r) => r.id === room.id)) return prev;
+        return [...prev, room];
+      });
+    });
 
-    const newRoom: Room = {
-      id: nextId.toString(),
-      name: newRoomName.trim(),
+    return () => {
+      socket.off("initialRooms");
+      socket.off("newRoom");
     };
+  }, []);
 
-    setRooms([...rooms, newRoom]);
-    setNewRoomName("");
+  const handleCreateRoom = async () => {
+    const trimmed = roomInput.trim();
+    if (!trimmed) return;
+
+    try {
+      const socket = getSocket();
+
+      await axiosClient.post("/rooms", { name: trimmed });
+      socket.emit("createRoom", { name: trimmed });
+      setRoomInput("");
+    } catch (error) {
+      console.error("Failed to create room:", error);
+    }
   };
 
-  const joinRoom = (id: string) => {
-    router.push(`/room/${id}`);
+  const handleJoinRoom = (name: string) => {
+    router.push(`/room/${name}`);
   };
 
   const logOut = async () => {
@@ -57,8 +84,7 @@ export default function Home() {
 
     if (result.isConfirmed) {
       try {
-        const users = await axiosClient.post("/logout");
-        console.log(users.data);
+        await axiosClient.post("/logout");
       } catch (error) {
         console.error("Error during logout:", error);
       }
@@ -76,71 +102,47 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950 flex flex-col items-center p-4 pt-[90px]">
-      <section className="w-full max-w-md bg-teal-600 p-6 rounded-lg shadow-lg mb-10">
-        <h2 className="text-2xl font-semibold text-teal-950 mb-4">
-          Create a Room
-        </h2>
-        <div className="flex gap-3">
+    <div className="p-8 pt-[90px] text-white min-h-screen bg-gradient-to-br from-teal-900 via-teal-800 to-teal-950">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-teal-300">
+          Available Rooms
+        </h1>
+
+        <ul className="space-y-2 mb-6">
+          {rooms.map((room) => (
+            <li
+              key={room.id}
+              onClick={() => handleJoinRoom(room.name)}
+              className="cursor-pointer bg-teal-800 p-3 rounded-lg hover:bg-teal-700 transition"
+            >
+              {room.name}
+            </li>
+          ))}
+        </ul>
+
+        <div className="flex space-x-2">
           <input
             type="text"
-            placeholder="Room name"
-            className="flex-grow border-2 bg-white border-teal-900 rounded-md px-4 py-2 text-teal-900 focus:outline-none focus:ring-2 focus:ring-teal-900"
-            value={newRoomName}
-            onChange={(e) => setNewRoomName(e.target.value)}
+            value={roomInput}
+            onChange={(e) => setRoomInput(e.target.value)}
+            placeholder="Enter room name"
+            className="flex-1 p-3 rounded-lg bg-teal-800 border border-teal-600 placeholder-teal-400 text-teal-100"
           />
           <button
-            onClick={createRoom}
-            className="bg-teal-950 hover:bg-teal-800 text-white font-semibold rounded-md px-5"
-            aria-label="Create new room"
+            onClick={handleCreateRoom}
+            className="bg-teal-600 hover:bg-teal-700 p-3 rounded-lg text-white font-semibold"
           >
             Create
           </button>
         </div>
-      </section>
 
-      <h1 className="text-4xl font-extrabold text-white mb-8">
-        Available Rooms
-      </h1>
-
-      <section className="w-full max-w-[800px] bg-teal-300 p-2 rounded-xl overflow-y-scroll max-h-[350px] shadow-lg">
-        {rooms.length === 0 ? (
-          <p className="text-center text-teal-400 italic">No rooms available</p>
-        ) : (
-          rooms.map((room) => (
-            <div
-              key={room.id}
-              className="flex justify-between items-center bg-teal-950 p-2 rounded-md m-1"
-              onClick={() => joinRoom(room.id)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") joinRoom(room.id);
-              }}
-            >
-              <span className="text-white font-medium text-lg">
-                {room.name}
-              </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  joinRoom(room.id);
-                }}
-                className="bg-teal-600 hover:bg-teal-700 text-white rounded-md px-4 py-2 font-semibold transition"
-                aria-label={`Join ${room.name}`}
-              >
-                Join
-              </button>
-            </div>
-          ))
-        )}
-      </section>
-      <button
-        className="bg-teal-300 hover:bg-teal-500 text-teal-950 px-3 py-2 text-xl uppercase rounded-lg mt-10 font-semibold"
-        onClick={() => logOut()}
-      >
-        Log out
-      </button>
+        <button
+          className="bg-teal-300 hover:bg-teal-500 text-teal-950 px-3 py-2 text-xl uppercase rounded-lg mt-10 font-semibold"
+          onClick={logOut}
+        >
+          Log out
+        </button>
+      </div>
     </div>
   );
 }
