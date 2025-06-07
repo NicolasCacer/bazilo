@@ -58,7 +58,7 @@ export default function Login() {
         login({ displayName: formData.username });
         setTimeout(() => {
           router.push("/home");
-        }, 100);
+        }, 1000);
       });
     } catch (error) {
       const axiosError = error as AxiosError<{ message?: string }>;
