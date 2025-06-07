@@ -56,7 +56,9 @@ export default function Login() {
         timerProgressBar: true,
       }).then(() => {
         login({ displayName: formData.username });
-        router.push("/home");
+        setTimeout(() => {
+          router.push("/home");
+        }, 100);
       });
     } catch (error) {
       const axiosError = error as AxiosError<{ message?: string }>;
