@@ -25,6 +25,7 @@ export default function Login() {
   });
   const [errors, setErrors] = useState<Errors>({});
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { login } = useAuth();
 
   const validate = (): boolean => {
@@ -42,6 +43,8 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
+
+    setIsLoading(true); // activar loader
 
     try {
       await axiosClient.post("/login", {
@@ -68,6 +71,8 @@ export default function Login() {
         title: "Login failed",
         text: errorMessage,
       });
+    } finally {
+      setIsLoading(false); // desactivar loader
     }
   };
 
@@ -121,9 +126,15 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition uppercase shadow-md"
+          className="w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition uppercase shadow-md flex justify-center items-center"
+          disabled={isLoading}
         >
           login
+          {isLoading && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="w-16 h-16 border-4 border-white border-t-teal-500 rounded-full animate-spin"></div>
+            </div>
+          )}
         </button>
       </form>
     </div>
