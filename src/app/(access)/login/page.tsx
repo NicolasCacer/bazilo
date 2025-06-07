@@ -82,6 +82,7 @@ export default function Login() {
           placeholder="username"
           className="w-full p-2 border bg-white border-teal-900 rounded focus:outline-none focus:ring-2 focus:ring-teal-950 text-black"
           value={formData.username}
+          autoComplete="on"
           onChange={(e) =>
             setFormData({ ...formData, username: e.target.value })
           }
@@ -96,6 +97,7 @@ export default function Login() {
             placeholder="Password"
             className="border bg-white border-teal-900 rounded-l-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-950 text-black"
             value={formData.password}
+            autoComplete="on"
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
