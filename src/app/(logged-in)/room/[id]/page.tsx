@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { getSocket } from "@/lib/socket";
 import { useAuth } from "@/context/AuthContext";
+import BoardGame from "@/components/BoardGame/BoardGame";
 
 interface ChatMessage {
   sender: string;
@@ -65,6 +66,8 @@ export default function RoomPage() {
         <h1 className="text-4xl font-extrabold mb-8 text-center text-teal-300">
           Room #{roomId}
         </h1>
+        {/* 🎮 Game */}
+        <BoardGame />
 
         <section>
           <h2 className="text-2xl font-semibold mb-3 text-teal-300">💬 Chat</h2>
