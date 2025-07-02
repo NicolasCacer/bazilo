@@ -34,7 +34,14 @@ export default function BoardGame() {
     socket.on("gameState", (state) => {
       setBoard(state.board);
       setCurrentTurn(state.currentTurn);
-      setWinner(state.winner);
+      if (state.winner && !winner) {
+        // Esperar 800ms antes de mostrar el ganador
+        setTimeout(() => {
+          setWinner(state.winner);
+        }, 1000);
+      } else if (!state.winner) {
+        setWinner(null); // limpiar ganador si se reinició
+      }
     });
 
     socket.on("assignedColor", (color: "red" | "blue") => {
@@ -53,7 +60,7 @@ export default function BoardGame() {
       socket.off("assignedColor");
       socket.off("cellExploding");
     };
-  }, [socket, roomId]);
+  }, [socket, roomId, winner]);
 
   const handleClick = (x: number, y: number) => {
     if (!playerColor || playerColor !== currentTurn || winner) return;
